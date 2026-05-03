@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">PAUD Amtsilatul Huda</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <style>
+        :root {
+            --ds-primary: #084e43;
+            --ds-secondary: #efc41c;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .bg-primary-custom { background-color: var(--ds-primary) !important; }
+        .text-primary-custom { color: var(--ds-primary) !important; }
+        .bg-secondary-custom { background-color: var(--ds-secondary) !important; }
+        .btn-custom {
+            background-color: var(--ds-secondary);
+            color: #000;
+            font-weight: bold;
+        }
+        .btn-custom:hover { background-color: #d4ac15; }
+        .shortcut-card {
+            border: 2px solid var(--ds-primary);
+            border-radius: 15px;
+            transition: transform 0.3s;
+            background: white;
+            cursor: pointer; 
+        }
+        .shortcut-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .shortcut-icon {
+            font-size: 2rem;
+            color: var(--ds-primary);
+            margin-bottom: 10px;
+        }
+        .hero-section {
+            background: linear-gradient(rgba(8, 78, 67, 0.8), rgba(8, 78, 67, 0.8)), url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80') center/cover;
+            color: white;
+            padding: 100px 0;
+            transition: background 0.5s ease;
+        }
+        .news-card {
+            border-left: 5px solid var(--ds-secondary);
+            transition: 0.3s;
+        }
+        .news-card:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .teks-rapi { white-space: pre-line; } 
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary-custom shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="#">
+                <img id="navLogoImg" src="" alt="Logo PAUD" style="height: 30px; display: none; border-radius: 5px;" class="me-2 bg-white p-1">
+                <i id="navLogoIcon" class="fa-solid fa-school text-warning me-2"></i> 
+                <span id="navBrandText">PAUD Amtsilatul Huda</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto fw-medium align-items-lg-center">
+                    <li class="nav-item"><a class="nav-link active" href="#">Beranda</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#profil">Profil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#informasi">Informasi</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#galeri">Galeri</a></li>
+                    <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
+                        <a class="btn btn-custom rounded-pill px-4 btn-daftar" href="#pmb">
+                            <i class="fa-solid fa-graduation-cap"></i> Info PMB
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-section text-center" id="heroSection">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-3">Selamat Datang di <span id="heroBrandText">PAUD Amtsilatul Huda</span></h1>
+            <p class="lead mb-4" id="heroDescText">Membentuk Generasi Cerdas, Ceria, dan Berakhlak Mulia sejak Usia Dini.</p>
+            <a href="#pmb" class="btn btn-custom btn-lg rounded-pill shadow btn-daftar">Daftar Sekarang</a>
+        </div>
+    </header>
+
+    <section class="py-5" id="profil">
+        <div class="container text-center">
+            <h2 class="fw-bold mb-4 text-primary-custom" id="teksAksesCepat">Akses Cepat</h2>
+            <div class="row g-4 justify-content-center">
+                <div class="col-6 col-md-3" data-bs-toggle="modal" data-bs-target="#modalVisiMisi">
+                    <div class="p-4 shortcut-card h-100">
+                        <i class="fa-solid fa-book-open shortcut-icon"></i>
+                        <h5 class="fs-6 fw-bold mb-0">Visi & Misi</h5>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3" data-bs-toggle="modal" data-bs-target="#modalPopupPMB">
+                    <div class="p-4 shortcut-card h-100 bg-secondary-custom border-0">
+                        <i class="fa-solid fa-bullhorn shortcut-icon text-dark"></i>
+                        <h5 class="fs-6 fw-bold mb-0 text-dark">Info PMB</h5>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3" data-bs-toggle="modal" data-bs-target="#modalAgenda">
+                    <div class="p-4 shortcut-card h-100">
+                        <i class="fa-regular fa-calendar-days shortcut-icon"></i>
+                        <h5 class="fs-6 fw-bold mb-0">Agenda</h5>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3" data-bs-toggle="modal" data-bs-target="#modalPrestasi">
+                    <div class="p-4 shortcut-card h-100">
+                        <i class="fa-solid fa-trophy shortcut-icon"></i>
+                        <h5 class="fs-6 fw-bold mb-0">Prestasi</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5 bg-white" id="pmb">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <img id="imgPMB" src="https://images.unsplash.com/photo-1587691592099-24045742c181?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Anak PAUD Belajar" class="img-fluid rounded-4 shadow">
+                </div>
+                <div class="col-lg-6 px-lg-5">
+                    <h2 class="fw-bold text-primary-custom mb-3" id="teksJudulPMB">Penerimaan Murid Baru (PMB)</h2>
+                    <p class="text-muted" id="teksDescPMB">Telah dibuka pendaftaran murid baru. Kami menyediakan fasilitas belajar yang nyaman, bermain sambil belajar, dan pendidikan karakter islami.</p>
+                    <ul class="list-unstyled mb-4">
+                        <li class="mb-2"><i class="fa-solid fa-check text-success me-2"></i> Usia pendaftaran: 3 - 6 Tahun</li>
+                        <li class="mb-2"><i class="fa-solid fa-check text-success me-2"></i> Fasilitas Area Bermain Indoor & Outdoor</li>
+                        <li class="mb-2"><i class="fa-solid fa-check text-success me-2"></i> Kurikulum terpadu (Umum & Agama)</li>
+                    </ul>
+                    
+                    <div id="embedFormContainer" class="w-100 border rounded shadow-sm" style="display:none; height: 500px; overflow: hidden;">
+                        <iframe id="iframeGform" src="" width="100%" height="100%" frameborder="0" marginheight="0" marginwidth="0">Memuat Formulir…</iframe>
+                    </div>
+                    
+                    <a href="https://wa.me/6281234567890" target="_blank" class="btn btn-success mt-3 rounded-pill px-4 me-2">
+                        <i class="fa-brands fa-whatsapp"></i> Hubungi Admin PMB
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5" id="informasi" style="background-color: #f0f4f3;">
+        <div class="container">
+            <h2 class="fw-bold mb-4 text-center text-primary-custom" id="teksJudulBerita">Informasi & Berita Terbaru</h2>
+            <div class="row" id="container-berita">
+                <div class="col-12 text-center text-muted" id="no-berita">Memuat berita...</div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-primary-custom text-white pt-5 pb-3">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5 mb-4">
+                    <h4 class="fw-bold mb-3 d-flex align-items-center">
+                        <img id="footerLogoImg" src="" alt="Logo PAUD" style="height: 35px; display: none; border-radius: 5px;" class="me-2 bg-white p-1">
+                        <i id="footerLogoIcon" class="fa-solid fa-school text-warning me-2"></i> 
+                        <span id="footerBrandText">PAUD Amtsilatul Huda</span>
+                    </h4>
+                    <p id="teksFooterDesc">Lembaga Pendidikan Anak Usia Dini yang berdedikasi untuk menciptakan lingkungan bermain dan belajar yang aman, islami, dan menyenangkan.</p>
+                </div>
+                <div class="col-lg-3 mb-4">
+                    <h5 class="fw-bold mb-3">Menu Cepat</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white text-decoration-none mb-2 d-block">Pendaftaran / PMB</a></li>
+                        <li><a href="#" class="text-white text-decoration-none mb-2 d-block">Profil Sekolah</a></li>
+                        <li><a href="#" class="text-white text-decoration-none mb-2 d-block">Fasilitas</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <h5 class="fw-bold mb-3">Alamat & Kontak</h5>
+                    <p><i class="fa-solid fa-location-dot me-2 text-warning"></i> <span id="teksAlamat">Jl. Contoh Alamat No. 123, Kota Anda.</span></p>
+                    <p><i class="fa-solid fa-phone me-2 text-warning"></i> <span id="teksTelepon">0812-3456-7890</span></p>
+                </div>
+            </div>
+            <hr class="border-secondary">
+            <div class="text-center mt-3 d-flex justify-content-between align-items-center">
+                <p class="mb-0 fs-7">&copy; 2024 Hak Cipta Dilindungi.</p>
+                <button class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#adminLoginModal"><i class="fa-solid fa-lock"></i></button>
+            </div>
+        </div>
+    </footer>
+
+    <div class="modal fade" id="modalVisiMisi" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary-custom text-white">
+                    <h5 class="modal-title"><i class="fa-solid fa-book-open"></i> Visi & Misi</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body teks-rapi" id="popupVisiMisi">Memuat data dari server...</div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalPopupPMB" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-secondary-custom text-dark">
+                    <h5 class="modal-title fw-bold"><i class="fa-solid fa-bullhorn"></i> Informasi PMB</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body teks-rapi" id="popupInfoPMB">Memuat data dari server...</div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalAgenda" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary-custom text-white">
+                    <h5 class="modal-title"><i class="fa-regular fa-calendar-days"></i> Kalender Akademik</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="popupAgenda" class="teks-rapi mb-3">Memuat data dari server...</div>
+                    <iframe id="iframeGcal" src="" style="border: 0; width: 100%; height: 400px; display: none;" frameborder="0" scrolling="no"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalPrestasi" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary-custom text-white">
+                    <h5 class="modal-title"><i class="fa-solid fa-trophy text-warning"></i> Prestasi Siswa & Siswi</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body teks-rapi" id="popupPrestasi">Memuat data dari server...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="adminLoginModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary-custom text-white">
+                    <h5 class="modal-title fs-6"><i class="fa-solid fa-lock"></i> Login Sistem</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        <input type="text" id="adminUser" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" id="adminPass" class="form-control">
+                    </div>
+                    <button class="btn btn-custom w-100" onclick="loginAdmin()">Masuk</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="adminDashboardModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-xl"> 
+            <div class="modal-content">
+                <div class="modal-header bg-primary-custom text-white">
+                    <h5 class="modal-title"><i class="fa-solid fa-gauge"></i> Dashboard Pusat</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="nav nav-tabs mb-3" id="adminTabs" role="tablist">
+                        <li class="nav-item" role="presentation" id="navEsensial">
+                            <button class="nav-link active fw-bold text-primary-custom" data-bs-toggle="tab" data-bs-target="#tabEsensial" type="button">Esensial</button>
+                        </li>
+                        <li class="nav-item" role="presentation" id="navTeksWebsite">
+                            <button class="nav-link fw-bold text-primary-custom" data-bs-toggle="tab" data-bs-target="#tabTeksWebsite" type="button">Teks Utama</button>
+                        </li>
+                        <li class="nav-item" role="presentation" id="navPopUpAdmin">
+                            <button class="nav-link fw-bold text-primary-custom" data-bs-toggle="tab" data-bs-target="#tabPopUpAdmin" type="button">Konten Pop-up</button>
+                        </li>
+                        <li class="nav-item" role="presentation" id="navBerita">
+                            <button class="nav-link fw-bold text-primary-custom" data-bs-toggle="tab" data-bs-target="#tabBerita" type="button">Berita</button>
+                        </li>
+                        <li class="nav-item" role="presentation" id="tabAkunNav">
+                            <button class="nav-link fw-bold text-danger" data-bs-toggle="tab" data-bs-target="#tabAkun" type="button"><i class="fa-solid fa-shield-halved"></i> Hak Akses & Akun</button>
+                        </li>
+                        <li class="nav-item" role="presentation" id="navSiswaLengkap">
+                            <button class="nav-link fw-bold text-primary-custom" data-bs-toggle="tab" data-bs-target="#tabSiswaLengkap" type="button">Data & Absen Siswa</button>
+                        </li>
+                        <li class="nav-item" role="presentation" id="navJadwal">
+                            <button class="nav-link fw-bold text-primary-custom" data-bs-toggle="tab" data-bs-target="#tabJadwal" type="button">Jadwal Guru</button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="tabEsensial">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">URL Gambar Logo <small class="text-muted fw-normal">(Opsional)</small></label>
+                                <input type="url" id="inputLogoUrl" class="form-control" placeholder="Contoh: https://linkgambar.com/logo.png">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">URL Gambar Background Depan <small class="text-muted fw-normal">(Opsional)</small></label>
+                                <input type="url" id="inputBgUrl" class="form-control" placeholder="Contoh: https://linkgambar.com/background.jpg">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">URL Gambar Halaman Depan (Atas Tulisan PMB) <small class="text-muted fw-normal">(Opsional)</small></label>
+                                <input type="url" id="inputImgPmbUrl" class="form-control" placeholder="Contoh: https://linkgambar.com/fotopmb.jpg">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Nama Lembaga</label>
+                                <input type="text" id="inputNamaLembaga" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Slogan / Deskripsi Header</label>
+                                <textarea id="inputHeroDesc" class="form-control" rows="2"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Link Pendaftaran (Google Form URL)</label>
+                                <input type="url" id="inputGform" class="form-control" placeholder="Contoh: https://docs.google.com/forms/d/e/.../viewform">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Link Google Calendar (Embed URL)</label>
+                                <input type="url" id="inputGcalUrl" class="form-control" placeholder="Contoh: https://calendar.google.com/calendar/embed?src=...">
+                            </div>
+                            <button class="btn btn-success w-100" onclick="simpanPengaturanLembaga()"><i class="fa-solid fa-save"></i> Simpan Esensial</button>
+                        </div>
+
+                        <div class="tab-pane fade" id="tabTeksWebsite">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Judul Bagian "Akses Cepat"</label>
+                                    <input type="text" id="inputTeksAksesCepat" class="form-control">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Judul Bagian "PMB"</label>
+                                    <input type="text" id="inputTeksJudulPMB" class="form-control">
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label fw-bold">Teks Deskripsi PMB</label>
+                                    <textarea id="inputTeksDescPMB" class="form-control" rows="2"></textarea>
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label fw-bold">Judul Bagian "Berita"</label>
+                                    <input type="text" id="inputTeksJudulBerita" class="form-control">
+                                </div>
+                                <hr>
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label fw-bold">Teks Deskripsi Footer (Bawah)</label>
+                                    <textarea id="inputTeksFooterDesc" class="form-control" rows="2"></textarea>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Alamat Lembaga</label>
+                                    <input type="text" id="inputTeksAlamat" class="form-control">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Nomor Telepon / WA</label>
+                                    <input type="text" id="inputTeksTelepon" class="form-control">
+                                </div>
+                            </div>
+                            <button class="btn btn-success w-100" onclick="simpanPengaturanLembaga()"><i class="fa-solid fa-save"></i> Simpan Teks Utama</button>
+                        </div>
+
+                        <div class="tab-pane fade" id="tabPopUpAdmin">
+                            <div class="alert alert-info py-2"><small>Anda bisa menggunakan tombol 'Enter' untuk membuat baris baru. Format akan otomatis tersimpan.</small></div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Visi & Misi</label>
+                                <textarea id="inputPopupVisiMisi" class="form-control" rows="4"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Info PMB (Detail saat diklik)</label>
+                                <textarea id="inputPopupInfoPMB" class="form-control" rows="4"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Kalender Akademik / Teks Agenda Tambahan</label>
+                                <textarea id="inputPopupAgenda" class="form-control" rows="4"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Prestasi Siswa & Siswi</label>
+                                <textarea id="inputPopupPrestasi" class="form-control" rows="4"></textarea>
+                            </div>
+                            <button class="btn btn-success w-100" onclick="simpanPengaturanLembaga()"><i class="fa-solid fa-save"></i> Simpan Konten Pop-up</button>
+                        </div>
+
+                        <div class="tab-pane fade" id="tabBerita">
+                            <div class="card mb-3">
+                                <div class="card-body bg-light">
+                                    <h6 class="fw-bold">Tambah Berita Baru</h6>
+                                    <div class="mb-2">
+                                        <label class="form-label">Judul Berita</label>
+                                        <input type="text" id="judulBerita" class="form-control">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Isi Berita</label>
+                                        <textarea id="isiBerita" class="form-control" rows="3"></textarea>
+                                    </div>
+                                    <button class="btn btn-primary" onclick="tambahBeritaFirebase()"><i class="fa-solid fa-paper-plane"></i> Publikasikan</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="tabAkun">
+                            <div class="alert alert-danger py-2"><small><i class="fa-solid fa-triangle-exclamation"></i> Tab ini eksklusif untuk Admin (Super User).</small></div>
+                            <div class="card mb-3">
+                                <div class="card-body bg-light">
+                                    <h6 class="fw-bold">Manajemen Hak Akses & Akun Baru</h6>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-2">
+                                            <label class="form-label">Nama Lengkap</label>
+                                            <input type="text" id="akunNama" class="form-control">
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <label class="form-label">Role Akses</label>
+                                            <select id="akunRole" class="form-control">
+                                                <option value="guru">Guru</option>
+                                                <option value="kepsek">Kepala Sekolah</option>
+                                                <option value="bendahara">Bendahara</option>
+                                                <option value="operator">Operator Website</option>
+                                                <option value="admin">Admin (Super User)</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <label class="form-label">Username</label>
+                                            <input type="text" id="akunUser" class="form-control">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Password</label>
+                                            <input type="password" id="akunPass" class="form-control">
+                                        </div>
+                                        
+                                        <div class="col-12 mb-3">
+                                            <label class="form-label fw-bold text-primary">Ceklis Hak Akses Tambahan (Menu Khusus)</label>
+                                            <div class="d-flex flex-wrap gap-3 bg-white p-2 border rounded">
+                                                <div class="form-check"><input class="form-check-input chk-akses" type="checkbox" value="esensial" id="chkEsensial"><label class="form-check-label" for="chkEsensial">Esensial</label></div>
+                                                <div class="form-check"><input class="form-check-input chk-akses" type="checkbox" value="teks" id="chkTeks"><label class="form-check-label" for="chkTeks">Teks Utama</label></div>
+                                                <div class="form-check"><input class="form-check-input chk-akses" type="checkbox" value="popup" id="chkPopup"><label class="form-check-label" for="chkPopup">Konten Pop-up</label></div>
+                                                <div class="form-check"><input class="form-check-input chk-akses" type="checkbox" value="berita" id="chkBerita"><label class="form-check-label" for="chkBerita">Berita</label></div>
+                                                <div class="form-check"><input class="form-check-input chk-akses" type="checkbox" value="siswa" id="chkSiswa"><label class="form-check-label" for="chkSiswa">Data & Absen Siswa</label></div>
+                                                <div class="form-check"><input class="form-check-input chk-akses" type="checkbox" value="jadwal" id="chkJadwal"><label class="form-check-label" for="chkJadwal">Jadwal Guru</label></div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <button class="btn btn-success w-100" onclick="buatAkunSistem()"><i class="fa-solid fa-user-plus"></i> Buat Akun & Simpan Akses</button>
+                                </div>
+                            </div>
+                            <div id="listAkunContainer" class="table-responsive mt-3"></div>
+                        </div>
+
+                        <div class="tab-pane fade" id="tabSiswaLengkap">
+                            <div class="card mb-3 border-primary">
+                                <div class="card-header bg-primary text-white fw-bold">Input Data Siswa Baru</div>
+                                <div class="card-body bg-light">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-2">
+                                            <label class="form-label">Nama Lengkap</label>
+                                            <input type="text" id="siswaNama" class="form-control">
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <label class="form-label">Kelas / Kelompok</label>
+                                            <input type="text" id="siswaKelas" class="form-control" placeholder="Contoh: TK A">
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <label class="form-label">Tempat Lahir</label>
+                                            <input type="text" id="siswaTempat" class="form-control">
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <label class="form-label">Tanggal Lahir</label>
+                                            <input type="date" id="siswaTgl" class="form-control">
+                                        </div>
+                                        <div class="col-md-12 mb-2">
+                                            <label class="form-label">Alamat Lengkap</label>
+                                            <input type="text" id="siswaAlamat" class="form-control">
+                                        </div>
+                                        <div class="col-md-12 mb-2">
+                                            <label class="form-label">No. NIK Siswa</label>
+                                            <input type="number" id="siswaNik" class="form-control">
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <label class="form-label">Nama Bapak</label>
+                                            <input type="text" id="siswaBapak" class="form-control">
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <label class="form-label">Nama Ibu</label>
+                                            <input type="text" id="siswaIbu" class="form-control">
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <h6 class="fw-bold text-muted">Upload Dokumen <small>(Otomatis di-compress menjadi JPG kecil)</small></h6>
+                                    <div class="row">
+                                        <div class="col-md-4 mb-2">
+                                            <label class="form-label">Foto 4x6</label>
+                                            <input type="file" id="fileFoto" class="form-control" accept="image/*">
+                                        </div>
+                                        <div class="col-md-4 mb-2">
+                                            <label class="form-label">Akte Kelahiran</label>
+                                            <input type="file" id="fileAkte" class="form-control" accept="image/*">
+                                        </div>
+                                        <div class="col-md-4 mb-2">
+                                            <label class="form-label">Kartu Keluarga (KK)</label>
+                                            <input type="file" id="fileKk" class="form-control" accept="image/*">
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-primary mt-3 w-100" id="btnSimpanSiswa" onclick="prosesSimpanSiswa()">
+                                        <i class="fa-solid fa-save"></i> Simpan Data Siswa
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex gap-2 mb-3">
+                                <button class="btn btn-success" onclick="cetakDataSiswaTabel()"><i class="fa-solid fa-table-list"></i> Cetak Tabel Data Siswa</button>
+                                <button class="btn btn-warning text-dark fw-bold" onclick="cetakAbsenBulanan()"><i class="fa-solid fa-print"></i> Cetak Absensi 1 Bulan</button>
+                            </div>
+                            <div id="listSiswaContainer" class="table-responsive"></div>
+                        </div>
+
+                        <div class="tab-pane fade" id="tabJadwal">
+                            <div class="card mb-3">
+                                <div class="card-body bg-light">
+                                    <h6 class="fw-bold">Atur Jadwal Guru</h6>
+                                    <div class="row">
+                                        <div class="col-md-4 mb-2">
+                                            <label class="form-label">Nama Guru</label>
+                                            <input type="text" id="jadwalGuru" class="form-control">
+                                        </div>
+                                        <div class="col-md-4 mb-2">
+                                            <label class="form-label">Hari</label>
+                                            <select id="jadwalHari" class="form-control">
+                                                <option value="Senin">Senin</option>
+                                                <option value="Selasa">Selasa</option>
+                                                <option value="Rabu">Rabu</option>
+                                                <option value="Kamis">Kamis</option>
+                                                <option value="Jumat">Jumat</option>
+                                                <option value="Sabtu">Sabtu</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4 mb-2">
+                                            <label class="form-label">Kegiatan / Kelas</label>
+                                            <input type="text" id="jadwalKegiatan" class="form-control">
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-primary mt-2" onclick="tambahJadwalGuru()"><i class="fa-solid fa-calendar-plus"></i> Tambah Jadwal</button>
+                                </div>
+                            </div>
+                            <div id="listJadwalContainer" class="table-responsive"></div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="guruDashboardModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary-custom text-white">
+                    <h5 class="modal-title"><i class="fa-solid fa-chalkboard-user"></i> Dashboard Guru</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="extraMenuBtnContainer_guru" style="display:none;" class="mb-4">
+                        <button class="btn btn-warning w-100 fw-bold shadow-sm" onclick="bukaMenuEkstra()"><i class="fa-solid fa-star"></i> Buka Akses Menu Tambahan dari Admin</button>
+                    </div>
+
+                    <h5 class="fw-bold">Buat RKH PAUD</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <label class="form-label">Tanggal Pelaksanaan</label>
+                            <input type="date" id="rkhTanggal" class="form-control">
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label class="form-label">Tema / Sub Tema</label>
+                            <input type="text" id="rkhTema" class="form-control">
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Uraian Kegiatan RKH</label>
+                            <textarea id="rkhKegiatan" class="form-control" rows="4" placeholder="1. Pembukaan... &#10;2. Inti... &#10;3. Penutup..."></textarea>
+                        </div>
+                    </div>
+                    <button class="btn btn-success" onclick="simpanRKH()"><i class="fa-solid fa-save"></i> Simpan RKH</button>
+                    <hr>
+                    <h6 class="fw-bold mt-4">Daftar RKH Saya</h6>
+                    <div id="listRkhContainer" class="table-responsive mt-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="kepsekDashboardModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary-custom text-white">
+                    <h5 class="modal-title"><i class="fa-solid fa-user-tie"></i> Dashboard Kepala Sekolah</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center py-5">
+                    <div id="extraMenuBtnContainer_kepsek" style="display:none;" class="mb-4">
+                        <button class="btn btn-warning w-100 fw-bold shadow-sm" onclick="bukaMenuEkstra()"><i class="fa-solid fa-star"></i> Buka Akses Menu Tambahan dari Admin</button>
+                    </div>
+                    <h4 class="fw-bold">Selamat Datang, Kepala Sekolah</h4>
+                    <p class="text-muted">Akses laporan keseluruhan lembaga segera hadir di versi mendatang.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="bendaharaDashboardModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary-custom text-white">
+                    <h5 class="modal-title"><i class="fa-solid fa-wallet"></i> Dashboard Bendahara</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center py-5">
+                    <div id="extraMenuBtnContainer_bendahara" style="display:none;" class="mb-4">
+                        <button class="btn btn-warning w-100 fw-bold shadow-sm" onclick="bukaMenuEkstra()"><i class="fa-solid fa-star"></i> Buka Akses Menu Tambahan dari Admin</button>
+                    </div>
+                    <h4 class="fw-bold">Selamat Datang, Bendahara</h4>
+                    <p class="text-muted">Akses pencatatan keuangan PMB dan SPP segera hadir di versi mendatang.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalEditAkses" tabindex="-1">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content border-warning">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title fw-bold"><i class="fa-solid fa-key"></i> Edit Hak Akses</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editAksesUserId">
+                    <div class="d-flex flex-column gap-2">
+                        <div class="form-check"><input class="form-check-input edit-chk-akses" type="checkbox" value="esensial" id="editChkEsensial"><label class="form-check-label" for="editChkEsensial">Esensial</label></div>
+                        <div class="form-check"><input class="form-check-input edit-chk-akses" type="checkbox" value="teks" id="editChkTeks"><label class="form-check-label" for="editChkTeks">Teks Utama</label></div>
+                        <div class="form-check"><input class="form-check-input edit-chk-akses" type="checkbox" value="popup" id="editChkPopup"><label class="form-check-label" for="editChkPopup">Konten Pop-up</label></div>
+                        <div class="form-check"><input class="form-check-input edit-chk-akses" type="checkbox" value="berita" id="editChkBerita"><label class="form-check-label" for="editChkBerita">Berita</label></div>
+                        <div class="form-check"><input class="form-check-input edit-chk-akses" type="checkbox" value="siswa" id="editChkSiswa"><label class="form-check-label" for="editChkSiswa">Data & Absen Siswa</label></div>
+                        <div class="form-check"><input class="form-check-input edit-chk-akses" type="checkbox" value="jadwal" id="editChkJadwal"><label class="form-check-label" for="editChkJadwal">Jadwal Guru</label></div>
+                    </div>
+                    <button class="btn btn-success mt-3 w-100" onclick="simpanEditAkses()"><i class="fa-solid fa-save"></i> Perbarui Akses</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // ==========================================
+        // 1. KONFIGURASI FIREBASE
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyD5o2bZ_s3UbXWwt8Mkrc4MX_bG-w_gnio",
+            authDomain: "sistem-pah.firebaseapp.com",
+            databaseURL: "https://sistem-pah-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "sistem-pah",
+            storageBucket: "sistem-pah.firebasestorage.app",
+            messagingSenderId: "501845205374",
+            appId: "1:501845205374:web:30d42ecb7daf5bf402132f",
+            measurementId: "G-WFJ78RC371"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+
+        let isAdminLoggedIn = false;
+        let currentUserRole = ""; 
+        let activeModalsToClose = [];
+
+        document.addEventListener("DOMContentLoaded", () => {
+            db.collection("settings").doc("lembaga").onSnapshot((doc) => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    if(data.logoUrl) {
+                        document.getElementById('navLogoImg').src = data.logoUrl; document.getElementById('navLogoImg').style.display = 'inline-block'; document.getElementById('navLogoIcon').style.display = 'none';
+                        document.getElementById('footerLogoImg').src = data.logoUrl; document.getElementById('footerLogoImg').style.display = 'inline-block'; document.getElementById('footerLogoIcon').style.display = 'none';
+                    }
+                    if(data.bgUrl) document.getElementById('heroSection').style.backgroundImage = `linear-gradient(rgba(8, 78, 67, 0.8), rgba(8, 78, 67, 0.8)), url('${data.bgUrl}')`;
+                    
+                    if(data.imgPmbUrl) { document.getElementById('imgPMB').src = data.imgPmbUrl; }
+
+                    if(data.namaLembaga) {
+                        document.getElementById('navBrandText').innerText = data.namaLembaga; document.getElementById('heroBrandText').innerText = data.namaLembaga;
+                        document.getElementById('footerBrandText').innerText = data.namaLembaga; document.getElementById('pageTitle').innerText = data.namaLembaga;
+                    }
+                    if(data.heroDesc) document.getElementById('heroDescText').innerText = data.heroDesc;
+                    
+                    const btnDaftarElements = document.querySelectorAll('.btn-daftar');
+                    if(data.gformUrl) {
+                        document.getElementById('embedFormContainer').style.display = 'block'; document.getElementById('iframeGform').src = data.gformUrl;
+                        btnDaftarElements.forEach(btn => { btn.href = data.gformUrl; btn.target = "_blank"; });
+                    } else {
+                        document.getElementById('embedFormContainer').style.display = 'none';
+                        btnDaftarElements.forEach(btn => { btn.href = "#pmb"; btn.removeAttribute("target"); });
+                    }
+
+                    if(data.gcalUrl) { document.getElementById('iframeGcal').src = data.gcalUrl; document.getElementById('iframeGcal').style.display = 'block'; } else { document.getElementById('iframeGcal').style.display = 'none'; }
+                    
+                    if(data.teksAksesCepat) document.getElementById('teksAksesCepat').innerText = data.teksAksesCepat;
+                    if(data.teksJudulPMB) document.getElementById('teksJudulPMB').innerText = data.teksJudulPMB;
+                    if(data.teksDescPMB) document.getElementById('teksDescPMB').innerText = data.teksDescPMB;
+                    if(data.teksJudulBerita) document.getElementById('teksJudulBerita').innerText = data.teksJudulBerita;
+                    if(data.teksFooterDesc) document.getElementById('teksFooterDesc').innerText = data.teksFooterDesc;
+                    if(data.teksAlamat) document.getElementById('teksAlamat').innerText = data.teksAlamat;
+                    if(data.teksTelepon) document.getElementById('teksTelepon').innerText = data.teksTelepon;
+
+                    if(data.popupVisiMisi) document.getElementById('popupVisiMisi').innerText = data.popupVisiMisi;
+                    if(data.popupInfoPMB) document.getElementById('popupInfoPMB').innerText = data.popupInfoPMB;
+                    if(data.popupAgenda) document.getElementById('popupAgenda').innerText = data.popupAgenda;
+                    if(data.popupPrestasi) document.getElementById('popupPrestasi').innerText = data.popupPrestasi;
+
+                    document.getElementById('inputLogoUrl').value = data.logoUrl || ""; document.getElementById('inputBgUrl').value = data.bgUrl || "";
+                    document.getElementById('inputImgPmbUrl').value = data.imgPmbUrl || ""; 
+                    document.getElementById('inputGcalUrl').value = data.gcalUrl || ""; document.getElementById('inputNamaLembaga').value = data.namaLembaga || "";
+                    document.getElementById('inputHeroDesc').value = data.heroDesc || ""; document.getElementById('inputGform').value = data.gformUrl || "";
+                    
+                    document.getElementById('inputTeksAksesCepat').value = data.teksAksesCepat || "Akses Cepat"; document.getElementById('inputTeksJudulPMB').value = data.teksJudulPMB || "Penerimaan Murid Baru (PMB)";
+                    document.getElementById('inputTeksDescPMB').value = data.teksDescPMB || "Telah dibuka pendaftaran murid baru..."; document.getElementById('inputTeksJudulBerita').value = data.teksJudulBerita || "Informasi & Berita Terbaru";
+                    document.getElementById('inputTeksFooterDesc').value = data.teksFooterDesc || "..."; document.getElementById('inputTeksAlamat').value = data.teksAlamat || "Jl. Contoh...";
+                    document.getElementById('inputTeksTelepon').value = data.teksTelepon || "0812-3456-7890";
+                    document.getElementById('inputPopupVisiMisi').value = data.popupVisiMisi || "Visi:\n..."; document.getElementById('inputPopupInfoPMB').value = data.popupInfoPMB || "Syarat...";
+                    document.getElementById('inputPopupAgenda').value = data.popupAgenda || "..."; document.getElementById('inputPopupPrestasi').value = data.popupPrestasi || "...";
+                }
+            });
+
+            db.collection("berita").orderBy("timestamp", "desc").onSnapshot((querySnapshot) => {
+                const container = document.getElementById('container-berita');
+                container.innerHTML = '';
+                if (querySnapshot.empty) { container.innerHTML = '<div class="col-12 text-center text-muted">Belum ada berita terbaru.</div>'; return; }
+                querySnapshot.forEach((doc) => {
+                    const berita = doc.data();
+                    const btnHapus = (isAdminLoggedIn && (currentUserRole === 'operator' || currentUserRole === 'admin')) ? `<button class="btn btn-sm text-danger" onclick="hapusBeritaFirebase('${doc.id}')"><i class="fa-solid fa-trash"></i></button>` : '';
+                    container.innerHTML += `<div class="col-md-6 mb-4"><div class="card p-3 news-card h-100 bg-white shadow-sm"><div class="d-flex justify-content-between"><small class="text-muted"><i class="fa-regular fa-calendar"></i> ${berita.tanggal}</small>${btnHapus}</div><h5 class="fw-bold mt-2 text-primary-custom">${berita.judul}</h5><p class="mb-0 text-dark">${berita.isi}</p></div></div>`;
+                });
+            });
+        });
+
+        function loginAdmin() {
+            const user = document.getElementById('adminUser').value;
+            const pass = document.getElementById('adminPass').value;
+            if (user === 'admin' && pass === '12345') { suksesLogin('admin', { role: 'admin', akses: [] }); } 
+            else {
+                db.collection("users").where("username", "==", user).where("password", "==", pass).get().then(snapshot => {
+                    if (!snapshot.empty) { suksesLogin(snapshot.docs[0].data().role, snapshot.docs[0].data()); } else { alert('Username atau Password salah!'); }
+                }).catch(err => alert("Error: " + err.message));
+            }
+        }
+
+        // FITUR BARU: Menerima data User untuk membaca Array "akses" yang di ceklis
+        function suksesLogin(role, userData) {
+            isAdminLoggedIn = true; currentUserRole = role;
+            bootstrap.Modal.getInstance(document.getElementById('adminLoginModal')).hide();
+            document.getElementById('adminUser').value = ''; document.getElementById('adminPass').value = '';
+
+            let aksesUser = (userData && userData.akses) ? userData.akses : [];
+            let hasCustomAkses = aksesUser.length > 0;
+
+            const navMap = {
+                'esensial': 'navEsensial', 'teks': 'navTeksWebsite', 'popup': 'navPopUpAdmin',
+                'berita': 'navBerita', 'siswa': 'navSiswaLengkap', 'jadwal': 'navJadwal'
+            };
+
+            // Mengatur Tab mana saja yang disembunyikan / ditampilkan
+            if (role !== 'admin' && role !== 'operator') {
+                Object.values(navMap).forEach(id => { let el = document.getElementById(id); if (el) el.style.display = 'none'; });
+                aksesUser.forEach(aks => { if(navMap[aks]) { document.getElementById(navMap[aks]).style.display = 'block'; } });
+            } else {
+                Object.values(navMap).forEach(id => { let el = document.getElementById(id); if (el) el.style.display = 'block'; });
+            }
+
+            if (role === 'admin' || role === 'operator') { 
+                new bootstrap.Modal(document.getElementById('adminDashboardModal')).show(); 
+                loadDataOperator(); 
+                const tabAkunNav = document.getElementById('tabAkunNav');
+                if(tabAkunNav) tabAkunNav.style.display = (role === 'admin') ? 'block' : 'none';
+            } 
+            else {
+                // Menampilkan dashboard sesuai rolenya
+                if (role === 'guru') { activeModalsToClose = ['guruDashboardModal']; new bootstrap.Modal(document.getElementById('guruDashboardModal')).show(); loadRKH(); } 
+                else if (role === 'kepsek') { activeModalsToClose = ['kepsekDashboardModal']; new bootstrap.Modal(document.getElementById('kepsekDashboardModal')).show(); } 
+                else if (role === 'bendahara') { activeModalsToClose = ['bendaharaDashboardModal']; new bootstrap.Modal(document.getElementById('bendaharaDashboardModal')).show(); }
+
+                // Munculkan Tombol Ekstra jika ada ceklis hak akses tambahan
+                document.getElementById('extraMenuBtnContainer_guru').style.display = (role === 'guru' && hasCustomAkses) ? 'block' : 'none';
+                document.getElementById('extraMenuBtnContainer_kepsek').style.display = (role === 'kepsek' && hasCustomAkses) ? 'block' : 'none';
+                document.getElementById('extraMenuBtnContainer_bendahara').style.display = (role === 'bendahara' && hasCustomAkses) ? 'block' : 'none';
+            }
+        }
+
+        // FITUR BARU: Membuka dashboard Admin (menutup dashboard sebelumnya) untuk user dengan akses khusus
+        function bukaMenuEkstra() {
+            activeModalsToClose.forEach(id => {
+                let m = bootstrap.Modal.getInstance(document.getElementById(id));
+                if(m) m.hide();
+            });
+            setTimeout(() => {
+                new bootstrap.Modal(document.getElementById('adminDashboardModal')).show();
+                loadDataOperator(); // Load ulang agar tabel jadwal dll yang diizinkan bisa berfungsi
+            }, 400);
+        }
+
+        function simpanPengaturanLembaga() {
+            db.collection("settings").doc("lembaga").set({
+                logoUrl: document.getElementById('inputLogoUrl').value, bgUrl: document.getElementById('inputBgUrl').value, 
+                imgPmbUrl: document.getElementById('inputImgPmbUrl').value, 
+                gcalUrl: document.getElementById('inputGcalUrl').value,
+                namaLembaga: document.getElementById('inputNamaLembaga').value, heroDesc: document.getElementById('inputHeroDesc').value, gformUrl: document.getElementById('inputGform').value,
+                teksAksesCepat: document.getElementById('inputTeksAksesCepat').value, teksJudulPMB: document.getElementById('inputTeksJudulPMB').value, teksDescPMB: document.getElementById('inputTeksDescPMB').value,
+                teksJudulBerita: document.getElementById('inputTeksJudulBerita').value, teksFooterDesc: document.getElementById('inputTeksFooterDesc').value, teksAlamat: document.getElementById('inputTeksAlamat').value,
+                teksTelepon: document.getElementById('inputTeksTelepon').value, popupVisiMisi: document.getElementById('inputPopupVisiMisi').value, popupInfoPMB: document.getElementById('inputPopupInfoPMB').value,
+                popupAgenda: document.getElementById('inputPopupAgenda').value, popupPrestasi: document.getElementById('inputPopupPrestasi').value
+            }, { merge: true }).then(() => alert("Pengaturan berhasil disimpan!")).catch(e => alert("Gagal: " + e.message));
+        }
+
+        function tambahBeritaFirebase() {
+            const judul = document.getElementById('judulBerita').value, isi = document.getElementById('isiBerita').value;
+            if(judul && isi) { db.collection("berita").add({ judul: judul, isi: isi, tanggal: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }), timestamp: firebase.firestore.FieldValue.serverTimestamp() }).then(() => { alert('Berita dipublikasikan!'); document.getElementById('judulBerita').value = ''; document.getElementById('isiBerita').value = ''; }); } else { alert('Kosong!'); }
+        }
+        function hapusBeritaFirebase(docId) { if(confirm("Yakin hapus?")) db.collection("berita").doc(docId).delete(); }
+
+        // FITUR BARU: Menambahkan penyimpanan array akses ceklis
+        function buatAkunSistem() {
+            if (currentUserRole !== 'admin') { alert("Hanya Admin Super yang berhak membuat akun!"); return; }
+
+            const n = document.getElementById('akunNama').value, r = document.getElementById('akunRole').value, u = document.getElementById('akunUser').value, p = document.getElementById('akunPass').value;
+            
+            let aksesDipilih = [];
+            document.querySelectorAll('.chk-akses:checked').forEach(chk => aksesDipilih.push(chk.value));
+
+            if(n && r && u && p) { 
+                db.collection("users").add({ nama: n, role: r, username: u, password: p, akses: aksesDipilih }).then(() => { 
+                    alert("Akun berhasil dibuat!"); 
+                    document.getElementById('akunNama').value = ''; document.getElementById('akunUser').value = ''; document.getElementById('akunPass').value = ''; 
+                    document.querySelectorAll('.chk-akses').forEach(chk => chk.checked = false);
+                }); 
+            } else { alert("Wajib isi semua!"); }
+        }
+        
+        function hapusAkunSistem(docId) {
+            if (currentUserRole !== 'admin') { alert("Hanya Admin Super yang berhak menghapus akun!"); return; }
+            if(confirm("Yakin hapus akun ini?")) db.collection("users").doc(docId).delete();
+        }
+
+        // FITUR BARU: Membuka Modul Edit Ceklis Akses
+        function bukaModalEditAkses(userId, currentAksesStr) {
+            if (currentUserRole !== 'admin') { alert("Hanya Admin Super!"); return; }
+            document.getElementById('editAksesUserId').value = userId;
+            const currentAkses = currentAksesStr ? currentAksesStr.split(',') : [];
+            document.querySelectorAll('.edit-chk-akses').forEach(chk => {
+                chk.checked = currentAkses.includes(chk.value);
+            });
+            new bootstrap.Modal(document.getElementById('modalEditAkses')).show();
+        }
+
+        function simpanEditAkses() {
+            const userId = document.getElementById('editAksesUserId').value;
+            let akses = [];
+            document.querySelectorAll('.edit-chk-akses:checked').forEach(chk => akses.push(chk.value));
+            
+            db.collection("users").doc(userId).update({
+                akses: akses
+            }).then(() => {
+                alert("Hak akses berhasil diperbarui!");
+                bootstrap.Modal.getInstance(document.getElementById('modalEditAkses')).hide();
+            }).catch(err => alert("Gagal update: " + err.message));
+        }
+
+        function tambahJadwalGuru() {
+            const g = document.getElementById('jadwalGuru').value, h = document.getElementById('jadwalHari').value, k = document.getElementById('jadwalKegiatan').value;
+            if(g && h && k) { db.collection("jadwal").add({ guru: g, hari: h, kegiatan: k, timestamp: firebase.firestore.FieldValue.serverTimestamp() }).then(() => { alert("Jadwal Ditambah!"); document.getElementById('jadwalGuru').value = ''; document.getElementById('jadwalKegiatan').value = ''; }); }
+        }
+
+        function simpanRKH() {
+            const t = document.getElementById('rkhTanggal').value, te = document.getElementById('rkhTema').value, k = document.getElementById('rkhKegiatan').value;
+            if(t && te && k) { db.collection("rkh").add({ tanggal: t, tema: te, kegiatan: k, timestamp: firebase.firestore.FieldValue.serverTimestamp() }).then(() => { alert("RKH Disimpan!"); document.getElementById('rkhTema').value = ''; document.getElementById('rkhKegiatan').value = ''; }); }
+        }
+        
+        const compressImageToJPG = (file) => {
+            return new Promise((resolve) => {
+                if (!file) return resolve(null);
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const MAX_WIDTH = 800; 
+                        let width = img.width, height = img.height;
+                        if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+                        canvas.width = width; canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        resolve(canvas.toDataURL('image/jpeg', 0.5));
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        };
+
+        async function prosesSimpanSiswa() {
+            const nama = document.getElementById('siswaNama').value, kelas = document.getElementById('siswaKelas').value, tempat = document.getElementById('siswaTempat').value;
+            const tgl = document.getElementById('siswaTgl').value, alamat = document.getElementById('siswaAlamat').value, nik = document.getElementById('siswaNik').value;
+            const bapak = document.getElementById('siswaBapak').value, ibu = document.getElementById('siswaIbu').value;
+
+            if(!nama) { alert("Nama siswa wajib diisi!"); return; }
+
+            document.getElementById('btnSimpanSiswa').innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Memproses...`;
+            document.getElementById('btnSimpanSiswa').disabled = true;
+
+            try {
+                const snapshot = await db.collection("siswa").get();
+                const urutan = snapshot.size + 1; const tahun = new Date().getFullYear();
+                const nisAuto = "PAUD" + tahun + String(urutan).padStart(3, '0');
+
+                const [imgFoto, imgAkte, imgKk] = await Promise.all([ compressImageToJPG(document.getElementById('fileFoto').files[0]), compressImageToJPG(document.getElementById('fileAkte').files[0]), compressImageToJPG(document.getElementById('fileKk').files[0]) ]);
+
+                await db.collection("siswa").add({ nis: nisAuto, nama: nama, kelas: kelas, tempatLahir: tempat, tglLahir: tgl, alamat: alamat, nik: nik, namaBapak: bapak, namaIbu: ibu, fotoData: imgFoto || "", akteData: imgAkte || "", kkData: imgKk || "", timestamp: firebase.firestore.FieldValue.serverTimestamp() });
+
+                alert("Data Siswa Lengkap Berhasil Disimpan dengan NIS: " + nisAuto);
+                ['siswaNama','siswaKelas','siswaTempat','siswaTgl','siswaAlamat','siswaNik','siswaBapak','siswaIbu','fileFoto','fileAkte','fileKk'].forEach(id => document.getElementById(id).value = '');
+            } catch (error) { alert("Terjadi kesalahan: " + error.message); } 
+            finally { document.getElementById('btnSimpanSiswa').innerHTML = `<i class="fa-solid fa-save"></i> Simpan Data Siswa`; document.getElementById('btnSimpanSiswa').disabled = false; }
+        }
+
+        function cetakDataSiswaTabel() {
+            db.collection("siswa").orderBy("nis").get().then((snapshot) => {
+                let htmlFormat = `<div style="text-align:center; font-family: sans-serif; margin-bottom: 20px;"><h2>DATA INDUK SISWA PAUD</h2><hr></div><table border="1" cellspacing="0" cellpadding="8" style="width:100%; border-collapse: collapse; font-family: sans-serif; font-size: 12px;"><tr style="background-color: #f2f2f2;"><th>No</th><th>NIS</th><th>Nama Lengkap</th><th>Kelas</th><th>Tempat, Tgl Lahir</th><th>Alamat</th><th>NIK</th><th>Orang Tua (Bapak/Ibu)</th><th>Kelengkapan</th></tr>`;
+                let no = 1;
+                snapshot.forEach(doc => {
+                    const dt = doc.data(); let cekLampiran = [];
+                    if(dt.fotoData) cekLampiran.push("Foto"); if(dt.akteData) cekLampiran.push("Akte"); if(dt.kkData) cekLampiran.push("KK");
+                    htmlFormat += `<tr><td style="text-align:center;">${no++}</td><td style="text-align:center;"><b>${dt.nis || '-'}</b></td><td>${dt.nama}</td><td style="text-align:center;">${dt.kelas || '-'}</td><td>${dt.tempatLahir || '-'}, ${dt.tglLahir || '-'}</td><td>${dt.alamat || '-'}</td><td>${dt.nik || '-'}</td><td>${dt.namaBapak || '-' } / ${dt.namaIbu || '-'}</td><td style="text-align:center;">${cekLampiran.join(", ") || 'Belum Ada'}</td></tr>`;
+                });
+                const win = window.open('', '_blank'); win.document.write(htmlFormat + `</table>`); win.document.close(); win.print();
+            });
+        }
+
+        function cetakAbsenBulanan() {
+            db.collection("siswa").orderBy("kelas").get().then((snapshot) => {
+                let kolomHari = ''; for(let i=1; i<=31; i++) kolomHari += `<th style="width:20px;">${i}</th>`;
+                let htmlFormat = `<div style="font-family: sans-serif;"><h2 style="text-align:center; margin-bottom: 5px;">DAFTAR HADIR SISWA BULANAN</h2><p style="text-align:center; margin-top: 0;">Bulan: ............................. Tahun: .............................</p><table border="1" cellspacing="0" cellpadding="5" style="width:100%; border-collapse: collapse; font-size: 11px;"><tr style="background-color: #f9f9f9;"><th rowspan="2">No</th><th rowspan="2">NIS</th><th rowspan="2" style="min-width: 150px;">Nama Siswa</th><th rowspan="2">Kls</th><th colspan="31">Tanggal</th></tr><tr>${kolomHari}</tr>`;
+                let no = 1;
+                snapshot.forEach(doc => {
+                    const dt = doc.data(); let kolomKosong = ''; for(let i=1; i<=31; i++) kolomKosong += `<td></td>`;
+                    htmlFormat += `<tr><td style="text-align:center;">${no++}</td><td style="text-align:center;">${dt.nis || '-'}</td><td>${dt.nama}</td><td style="text-align:center;">${dt.kelas || '-'}</td>${kolomKosong}</tr>`;
+                });
+                const win = window.open('', '_blank'); win.document.write(`<style>@page { size: landscape; margin: 1cm; }</style>` + htmlFormat + `</table></div>`); win.document.close(); setTimeout(() => win.print(), 500); 
+            });
+        }
+
+        function loadDataOperator() {
+            db.collection("users").onSnapshot(snap => {
+                let html = '<table class="table table-sm"><tr><th>Nama</th><th>Username</th><th>Role</th><th>Aksi</th></tr>';
+                snap.forEach(doc => { 
+                    const dt = doc.data(); 
+                    // FITUR BARU: Tombol Edit Akses
+                    const btnEdit = (currentUserRole === 'admin') ? `<button class="btn btn-warning btn-sm me-1" onclick="bukaModalEditAkses('${doc.id}', '${dt.akses ? dt.akses.join(',') : ''}')"><i class="fa-solid fa-key"></i></button>` : ``;
+                    html += `<tr><td>${dt.nama}</td><td>${dt.username}</td><td>${dt.role.toUpperCase()}</td><td>${btnEdit}<button class="btn btn-danger btn-sm" onclick="hapusAkunSistem('${doc.id}')"><i class="fa-solid fa-trash"></i></button></td></tr>`; 
+                });
+                document.getElementById('listAkunContainer').innerHTML = html + '</table>';
+            });
+            
+            db.collection("siswa").orderBy("nis", "desc").onSnapshot(snap => {
+                let html = '<table class="table table-sm"><tr><th>NIS</th><th>Nama</th><th>Kelas</th><th>Aksi</th></tr>';
+                snap.forEach(doc => { const dt = doc.data(); html += `<tr><td><b>${dt.nis || '-'}</b></td><td>${dt.nama}</td><td>${dt.kelas || '-'}</td><td><button class="btn btn-danger btn-sm" onclick="db.collection('siswa').doc('${doc.id}').delete()">Hapus</button></td></tr>`; });
+                document.getElementById('listSiswaContainer').innerHTML = html + '</table>';
+            });
+            
+            db.collection("jadwal").onSnapshot(snap => {
+                let html = '<table class="table table-sm"><tr><th>Hari</th><th>Guru</th><th>Kegiatan</th><th>Aksi</th></tr>';
+                snap.forEach(doc => { const dt = doc.data(); html += `<tr><td>${dt.hari}</td><td>${dt.guru}</td><td>${dt.kegiatan}</td><td><button class="btn btn-danger btn-sm" onclick="db.collection('jadwal').doc('${doc.id}').delete()">Hapus</button></td></tr>`; });
+                document.getElementById('listJadwalContainer').innerHTML = html + '</table>';
+            });
+        }
+
+        function loadRKH() {
+            db.collection("rkh").orderBy("tanggal", "desc").onSnapshot(snap => {
+                let html = '';
+                snap.forEach(doc => { const dt = doc.data(); html += `<div class="border p-3 mb-2 rounded bg-light"><small class="text-primary fw-bold">${dt.tanggal}</small><br><strong>Tema: ${dt.tema}</strong><p class="mb-0 teks-rapi">${dt.kegiatan}</p></div>`; });
+                document.getElementById('listRkhContainer').innerHTML = html;
+            });
+        }
+    </script>
+</body>
+</html>
