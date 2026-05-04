@@ -145,7 +145,7 @@
                         <iframe id="iframeGform" src="" width="100%" height="100%" frameborder="0" marginheight="0" marginwidth="0">Memuat Formulir…</iframe>
                     </div>
                     
-                    <a href="https://wa.me/6281234567890" target="_blank" class="btn btn-success mt-3 rounded-pill px-4 me-2">
+                    <a id="btnWaAdminPublic" href="https://wa.me/6281234567890" target="_blank" class="btn btn-success mt-3 rounded-pill px-4 me-2">
                         <i class="fa-brands fa-whatsapp"></i> Hubungi Admin PMB
                     </a>
                 </div>
@@ -299,6 +299,10 @@
 
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="tabEsensial">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Nomor WA Admin PMB <small class="text-muted fw-normal">(Gunakan 62 di awal, cth: 62812...)</small></label>
+                                <input type="number" id="inputWaAdmin" class="form-control" placeholder="Contoh: 6281234567890">
+                            </div>
                             <div class="mb-3">
                                 <label class="form-label fw-bold">URL Gambar Logo <small class="text-muted fw-normal">(Opsional)</small></label>
                                 <input type="url" id="inputLogoUrl" class="form-control" placeholder="Contoh: https://linkgambar.com/logo.png">
@@ -571,61 +575,132 @@
                         <button class="btn btn-warning w-100 fw-bold shadow-sm" onclick="bukaMenuEkstra()"><i class="fa-solid fa-star"></i> Buka Akses Menu Tambahan dari Admin</button>
                     </div>
 
-                    <h5 class="fw-bold">Buat RKH PAUD</h5>
-                    <div class="row">
-                        <div class="col-md-6 mb-2">
-                            <label class="form-label">Tanggal Pelaksanaan</label>
-                            <input type="date" id="rkhTanggal" class="form-control">
+                    <ul class="nav nav-tabs mb-3" role="tablist">
+                        <li class="nav-item" role="presentation"><button class="nav-link active fw-bold text-primary-custom" data-bs-toggle="tab" data-bs-target="#tabGuruRkh" type="button">Buat RKH</button></li>
+                        <li class="nav-item" role="presentation"><button class="nav-link fw-bold text-primary-custom" data-bs-toggle="tab" data-bs-target="#tabGuruSiswa" type="button">Daftar Siswa</button></li>
+                        <li class="nav-item" role="presentation"><button class="nav-link fw-bold text-success" data-bs-toggle="tab" data-bs-target="#tabGuruAbsen" type="button"><i class="fa-solid fa-location-dot"></i> Absen Kehadiran</button></li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="tabGuruRkh">
+                            <h5 class="fw-bold">Buat RKH PAUD</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label">Tanggal Pelaksanaan</label>
+                                    <input type="date" id="rkhTanggal" class="form-control">
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label">Tema / Sub Tema</label>
+                                    <input type="text" id="rkhTema" class="form-control">
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <label class="form-label">Uraian Kegiatan RKH</label>
+                                    <textarea id="rkhKegiatan" class="form-control" rows="4" placeholder="1. Pembukaan... &#10;2. Inti... &#10;3. Penutup..."></textarea>
+                                </div>
+                            </div>
+                            <button class="btn btn-success" onclick="simpanRKH()"><i class="fa-solid fa-save"></i> Simpan RKH</button>
+                            <hr>
+                            <h6 class="fw-bold mt-4">Daftar RKH Saya</h6>
+                            <div id="listRkhContainer" class="table-responsive mt-2"></div>
                         </div>
-                        <div class="col-md-6 mb-2">
-                            <label class="form-label">Tema / Sub Tema</label>
-                            <input type="text" id="rkhTema" class="form-control">
+
+                        <div class="tab-pane fade" id="tabGuruSiswa">
+                            <h5 class="fw-bold">Data Induk Siswa</h5>
+                            <div class="alert alert-info py-2"><small>Hanya menampilkan data. Untuk edit, hubungi Admin / Operator.</small></div>
+                            <div id="listSiswaGuruContainer" class="table-responsive mt-2"></div>
                         </div>
-                        <div class="col-12 mb-3">
-                            <label class="form-label">Uraian Kegiatan RKH</label>
-                            <textarea id="rkhKegiatan" class="form-control" rows="4" placeholder="1. Pembukaan... &#10;2. Inti... &#10;3. Penutup..."></textarea>
+
+                        <div class="tab-pane fade" id="tabGuruAbsen">
+                            <div class="card border-success text-center mb-3">
+                                <div class="card-body">
+                                    <h5 class="fw-bold text-success"><i class="fa-solid fa-map-location-dot"></i> Absensi Berbasis Lokasi (GPS)</h5>
+                                    <p class="text-muted small">Aktifkan izin lokasi / GPS di browser Anda sebelum absen.</p>
+                                    <button id="btnAbsenGps" class="btn btn-success btn-lg px-5 rounded-pill shadow-sm" onclick="absenGuruSekarang()"><i class="fa-solid fa-check"></i> Absen Hadir Sekarang</button>
+                                </div>
+                            </div>
+                            <h6 class="fw-bold">Riwayat Kehadiran Anda</h6>
+                            <div id="listAbsenGuruContainer" class="table-responsive"></div>
                         </div>
                     </div>
-                    <button class="btn btn-success" onclick="simpanRKH()"><i class="fa-solid fa-save"></i> Simpan RKH</button>
-                    <hr>
-                    <h6 class="fw-bold mt-4">Daftar RKH Saya</h6>
-                    <div id="listRkhContainer" class="table-responsive mt-2"></div>
+
                 </div>
             </div>
         </div>
     </div>
 
     <div class="modal fade" id="kepsekDashboardModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header bg-primary-custom text-white">
                     <h5 class="modal-title"><i class="fa-solid fa-user-tie"></i> Dashboard Kepala Sekolah</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body text-center py-5">
+                <div class="modal-body py-4">
                     <div id="extraMenuBtnContainer_kepsek" style="display:none;" class="mb-4">
                         <button class="btn btn-warning w-100 fw-bold shadow-sm" onclick="bukaMenuEkstra()"><i class="fa-solid fa-star"></i> Buka Akses Menu Tambahan dari Admin</button>
                     </div>
-                    <h4 class="fw-bold">Selamat Datang, Kepala Sekolah</h4>
-                    <p class="text-muted">Akses laporan keseluruhan lembaga segera hadir di versi mendatang.</p>
+                    <h4 class="fw-bold mb-4">Selamat Datang, Kepala Sekolah</h4>
+                    
+                    <ul class="nav nav-tabs mb-3" role="tablist">
+                        <li class="nav-item" role="presentation"><button class="nav-link active fw-bold text-primary-custom" data-bs-toggle="tab" data-bs-target="#tabKepsekGuru" type="button">Aktivitas & Absen Guru</button></li>
+                        <li class="nav-item" role="presentation"><button class="nav-link fw-bold text-success" data-bs-toggle="tab" data-bs-target="#tabKepsekKeuangan" type="button">Laporan Keuangan</button></li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="tabKepsekGuru">
+                            <h5 class="fw-bold mt-2">Daftar Hadir Guru (GPS)</h5>
+                            <div id="listAbsenKepsekContainer" class="table-responsive mb-4"></div>
+                            <h5 class="fw-bold mt-2">Rencana Kegiatan Harian (RKH) Guru</h5>
+                            <div id="listRkhKepsekContainer" class="table-responsive"></div>
+                        </div>
+                        <div class="tab-pane fade" id="tabKepsekKeuangan">
+                            <h5 class="fw-bold mt-2">Mutasi Kas Keuangan PAUD</h5>
+                            <div id="listKeuanganKepsekContainer" class="table-responsive"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="modal fade" id="bendaharaDashboardModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-primary-custom text-white">
                     <h5 class="modal-title"><i class="fa-solid fa-wallet"></i> Dashboard Bendahara</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body text-center py-5">
+                <div class="modal-body py-4">
                     <div id="extraMenuBtnContainer_bendahara" style="display:none;" class="mb-4">
                         <button class="btn btn-warning w-100 fw-bold shadow-sm" onclick="bukaMenuEkstra()"><i class="fa-solid fa-star"></i> Buka Akses Menu Tambahan dari Admin</button>
                     </div>
-                    <h4 class="fw-bold">Selamat Datang, Bendahara</h4>
-                    <p class="text-muted">Akses pencatatan keuangan PMB dan SPP segera hadir di versi mendatang.</p>
+                    <h4 class="fw-bold mb-3">Pengelolaan Kas Keuangan</h4>
+                    
+                    <div class="card bg-light mb-4 border-warning">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3 mb-2">
+                                    <label class="form-label">Jenis</label>
+                                    <select id="uangJenis" class="form-control">
+                                        <option value="Masuk" class="text-success fw-bold">Uang Masuk</option>
+                                        <option value="Keluar" class="text-danger fw-bold">Uang Keluar</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <label class="form-label">Nominal (Rp)</label>
+                                    <input type="number" id="uangNominal" class="form-control" placeholder="Contoh: 50000">
+                                </div>
+                                <div class="col-md-5 mb-2">
+                                    <label class="form-label">Keterangan / Sumber</label>
+                                    <input type="text" id="uangKet" class="form-control" placeholder="Contoh: SPP Bulan Mei">
+                                </div>
+                            </div>
+                            <button class="btn btn-warning text-dark fw-bold w-100 mt-2" onclick="simpanKeuangan()"><i class="fa-solid fa-save"></i> Simpan Transaksi</button>
+                        </div>
+                    </div>
+
+                    <h5 class="fw-bold">Buku Kas Berjalan</h5>
+                    <div id="listKeuanganBendaharaContainer" class="table-responsive"></div>
                 </div>
             </div>
         </div>
@@ -678,6 +753,8 @@
 
         let isAdminLoggedIn = false;
         let currentUserRole = ""; 
+        let currentUserName = ""; 
+        let currentUserDataGlobal = null; 
         let activeModalsToClose = [];
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -733,6 +810,11 @@
                     document.getElementById('inputTeksTelepon').value = data.teksTelepon || "0812-3456-7890";
                     document.getElementById('inputPopupVisiMisi').value = data.popupVisiMisi || "Visi:\n..."; document.getElementById('inputPopupInfoPMB').value = data.popupInfoPMB || "Syarat...";
                     document.getElementById('inputPopupAgenda').value = data.popupAgenda || "..."; document.getElementById('inputPopupPrestasi').value = data.popupPrestasi || "...";
+
+                    if(data.waAdmin) {
+                        document.getElementById('inputWaAdmin').value = data.waAdmin;
+                        document.getElementById('btnWaAdminPublic').href = `https://wa.me/${data.waAdmin}`;
+                    }
                 }
             });
 
@@ -751,7 +833,7 @@
         function loginAdmin() {
             const user = document.getElementById('adminUser').value;
             const pass = document.getElementById('adminPass').value;
-            if (user === 'admin' && pass === '12345') { suksesLogin('admin', { role: 'admin', akses: [] }); } 
+            if (user === 'admin' && pass === '12345') { suksesLogin('admin', { nama: 'Admin', role: 'admin', akses: [] }); } 
             else {
                 db.collection("users").where("username", "==", user).where("password", "==", pass).get().then(snapshot => {
                     if (!snapshot.empty) { suksesLogin(snapshot.docs[0].data().role, snapshot.docs[0].data()); } else { alert('Username atau Password salah!'); }
@@ -761,7 +843,9 @@
 
         // FITUR BARU: Menerima data User untuk membaca Array "akses" yang di ceklis
         function suksesLogin(role, userData) {
-            isAdminLoggedIn = true; currentUserRole = role;
+            isAdminLoggedIn = true; currentUserRole = role; currentUserName = userData.nama;
+            currentUserDataGlobal = userData; // Simpan ke global agar fungsi bukaMenuEkstra bisa membaca ulang hak aksesnya
+            
             bootstrap.Modal.getInstance(document.getElementById('adminLoginModal')).hide();
             document.getElementById('adminUser').value = ''; document.getElementById('adminPass').value = '';
 
@@ -789,9 +873,9 @@
             } 
             else {
                 // Menampilkan dashboard sesuai rolenya
-                if (role === 'guru') { activeModalsToClose = ['guruDashboardModal']; new bootstrap.Modal(document.getElementById('guruDashboardModal')).show(); loadRKH(); } 
-                else if (role === 'kepsek') { activeModalsToClose = ['kepsekDashboardModal']; new bootstrap.Modal(document.getElementById('kepsekDashboardModal')).show(); } 
-                else if (role === 'bendahara') { activeModalsToClose = ['bendaharaDashboardModal']; new bootstrap.Modal(document.getElementById('bendaharaDashboardModal')).show(); }
+                if (role === 'guru') { activeModalsToClose = ['guruDashboardModal']; new bootstrap.Modal(document.getElementById('guruDashboardModal')).show(); loadRKH(); loadSiswaGuru(); loadAbsenGuru(); } 
+                else if (role === 'kepsek') { activeModalsToClose = ['kepsekDashboardModal']; new bootstrap.Modal(document.getElementById('kepsekDashboardModal')).show(); loadKepsekData(); } 
+                else if (role === 'bendahara') { activeModalsToClose = ['bendaharaDashboardModal']; new bootstrap.Modal(document.getElementById('bendaharaDashboardModal')).show(); loadKeuanganBendahara(); }
 
                 // Munculkan Tombol Ekstra jika ada ceklis hak akses tambahan
                 document.getElementById('extraMenuBtnContainer_guru').style.display = (role === 'guru' && hasCustomAkses) ? 'block' : 'none';
@@ -800,13 +884,24 @@
             }
         }
 
-        // FITUR BARU: Membuka dashboard Admin (menutup dashboard sebelumnya) untuk user dengan akses khusus
+        // FITUR BARU: Menambal kebocoran hak akses saat menekan menu Buka Tambahan
         function bukaMenuEkstra() {
             activeModalsToClose.forEach(id => {
                 let m = bootstrap.Modal.getInstance(document.getElementById(id));
                 if(m) m.hide();
             });
             setTimeout(() => {
+                // Menerapkan ulang filter tab berdasarkan akses user
+                let aksesUser = (currentUserDataGlobal && currentUserDataGlobal.akses) ? currentUserDataGlobal.akses : [];
+                const navMap = {
+                    'esensial': 'navEsensial', 'teks': 'navTeksWebsite', 'popup': 'navPopUpAdmin',
+                    'berita': 'navBerita', 'siswa': 'navSiswaLengkap', 'jadwal': 'navJadwal'
+                };
+                Object.values(navMap).forEach(id => { let el = document.getElementById(id); if (el) el.style.display = 'none'; });
+                aksesUser.forEach(aks => { if(navMap[aks]) { document.getElementById(navMap[aks]).style.display = 'block'; } });
+
+                document.getElementById('tabAkunNav').style.display = 'none'; // Pastikan tab akun terkunci
+
                 new bootstrap.Modal(document.getElementById('adminDashboardModal')).show();
                 loadDataOperator(); // Load ulang agar tabel jadwal dll yang diizinkan bisa berfungsi
             }, 400);
@@ -814,6 +909,7 @@
 
         function simpanPengaturanLembaga() {
             db.collection("settings").doc("lembaga").set({
+                waAdmin: document.getElementById('inputWaAdmin').value,
                 logoUrl: document.getElementById('inputLogoUrl').value, bgUrl: document.getElementById('inputBgUrl').value, 
                 imgPmbUrl: document.getElementById('inputImgPmbUrl').value, 
                 gcalUrl: document.getElementById('inputGcalUrl').value,
@@ -885,9 +981,61 @@
 
         function simpanRKH() {
             const t = document.getElementById('rkhTanggal').value, te = document.getElementById('rkhTema').value, k = document.getElementById('rkhKegiatan').value;
-            if(t && te && k) { db.collection("rkh").add({ tanggal: t, tema: te, kegiatan: k, timestamp: firebase.firestore.FieldValue.serverTimestamp() }).then(() => { alert("RKH Disimpan!"); document.getElementById('rkhTema').value = ''; document.getElementById('rkhKegiatan').value = ''; }); }
+            if(t && te && k) { db.collection("rkh").add({ namaGuru: currentUserName, tanggal: t, tema: te, kegiatan: k, timestamp: firebase.firestore.FieldValue.serverTimestamp() }).then(() => { alert("RKH Disimpan!"); document.getElementById('rkhTema').value = ''; document.getElementById('rkhKegiatan').value = ''; }); }
         }
         
+        // FUNGSI GURU ABSEN LOKASI
+        function absenGuruSekarang() {
+            const btn = document.getElementById('btnAbsenGps');
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Mengecek GPS...`;
+            btn.disabled = true;
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    db.collection("absensi_guru").add({
+                        namaGuru: currentUserName,
+                        tanggal: new Date().toLocaleDateString('id-ID'),
+                        waktu: new Date().toLocaleTimeString('id-ID'),
+                        lat: lat,
+                        lng: lng,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    }).then(() => {
+                        alert("Berhasil absen kehadiran lokasi!");
+                        btn.innerHTML = `<i class="fa-solid fa-check"></i> Absen Hadir Sekarang`; btn.disabled = false;
+                    });
+                }, error => {
+                    alert("Gagal mengambil lokasi. Pastikan GPS/Izin Lokasi di browser Anda aktif.");
+                    btn.innerHTML = `<i class="fa-solid fa-check"></i> Absen Hadir Sekarang`; btn.disabled = false;
+                }, {enableHighAccuracy: true});
+            } else {
+                alert("Browser atau perangkat Anda tidak mendukung GPS Lokasi.");
+            }
+        }
+
+        // FUNGSI SIMPAN KEUANGAN BENDAHARA
+        function simpanKeuangan() {
+            const jenis = document.getElementById('uangJenis').value;
+            const nominal = document.getElementById('uangNominal').value;
+            const ket = document.getElementById('uangKet').value;
+
+            if(nominal && ket) {
+                db.collection("keuangan").add({
+                    jenis: jenis,
+                    nominal: parseInt(nominal),
+                    ket: ket,
+                    tanggal: new Date().toLocaleDateString('id-ID'),
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                }).then(() => {
+                    alert("Data Keuangan Tersimpan!");
+                    document.getElementById('uangNominal').value = ''; document.getElementById('uangKet').value = '';
+                });
+            } else {
+                alert("Nominal dan Keterangan wajib diisi!");
+            }
+        }
+
         const compressImageToJPG = (file) => {
             return new Promise((resolve) => {
                 if (!file) return resolve(null);
@@ -989,10 +1137,57 @@
         function loadRKH() {
             db.collection("rkh").orderBy("tanggal", "desc").onSnapshot(snap => {
                 let html = '';
-                snap.forEach(doc => { const dt = doc.data(); html += `<div class="border p-3 mb-2 rounded bg-light"><small class="text-primary fw-bold">${dt.tanggal}</small><br><strong>Tema: ${dt.tema}</strong><p class="mb-0 teks-rapi">${dt.kegiatan}</p></div>`; });
+                snap.forEach(doc => { const dt = doc.data(); html += `<div class="border p-3 mb-2 rounded bg-light"><small class="text-primary fw-bold">${dt.tanggal} | Oleh: ${dt.namaGuru || 'Guru'}</small><br><strong>Tema: ${dt.tema}</strong><p class="mb-0 teks-rapi">${dt.kegiatan}</p></div>`; });
                 document.getElementById('listRkhContainer').innerHTML = html;
+                if(document.getElementById('listRkhKepsekContainer')) document.getElementById('listRkhKepsekContainer').innerHTML = html;
             });
         }
+
+        function loadSiswaGuru() {
+            db.collection("siswa").orderBy("nis", "desc").onSnapshot(snap => {
+                let html = '<table class="table table-sm table-bordered"><tr><th>NIS</th><th>Nama Siswa</th><th>Kelas</th></tr>';
+                snap.forEach(doc => { const dt = doc.data(); html += `<tr><td>${dt.nis || '-'}</td><td>${dt.nama}</td><td>${dt.kelas || '-'}</td></tr>`; });
+                document.getElementById('listSiswaGuruContainer').innerHTML = html + '</table>';
+            });
+        }
+
+        function loadAbsenGuru() {
+            db.collection("absensi_guru").orderBy("timestamp", "desc").onSnapshot(snap => {
+                let html = '<table class="table table-sm table-bordered"><tr><th>Tanggal & Waktu</th><th>Nama Guru</th><th>Lokasi Peta</th></tr>';
+                snap.forEach(doc => { 
+                    const dt = doc.data(); 
+                    const mapLink = `https://www.google.com/maps/search/?api=1&query=${dt.lat},${dt.lng}`;
+                    html += `<tr><td>${dt.tanggal} ${dt.waktu}</td><td>${dt.namaGuru}</td><td><a href="${mapLink}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-map"></i> Lihat Titik</a></td></tr>`; 
+                });
+                if(document.getElementById('listAbsenGuruContainer')) document.getElementById('listAbsenGuruContainer').innerHTML = html + '</table>';
+                if(document.getElementById('listAbsenKepsekContainer')) document.getElementById('listAbsenKepsekContainer').innerHTML = html + '</table>';
+            });
+        }
+
+        function loadKeuanganBendahara() {
+            db.collection("keuangan").orderBy("timestamp", "desc").onSnapshot(snap => {
+                let html = '<table class="table table-sm table-bordered text-center"><tr><th>Tgl</th><th>Keterangan</th><th>Pemasukan</th><th>Pengeluaran</th></tr>';
+                let totalSaldo = 0;
+                snap.forEach(doc => { 
+                    const d = doc.data();
+                    let inNom = '-', outNom = '-';
+                    if(d.jenis === 'Masuk') { inNom = `Rp ${d.nominal.toLocaleString('id-ID')}`; totalSaldo += d.nominal; }
+                    else { outNom = `Rp ${d.nominal.toLocaleString('id-ID')}`; totalSaldo -= d.nominal; }
+                    html += `<tr><td>${d.tanggal}</td><td class="text-start">${d.ket}</td><td class="text-success">${inNom}</td><td class="text-danger">${outNom}</td></tr>`; 
+                });
+                html += `<tr class="table-warning fw-bold"><td colspan="2" class="text-end">SALDO SAAT INI:</td><td colspan="2">Rp ${totalSaldo.toLocaleString('id-ID')}</td></tr></table>`;
+                
+                if(document.getElementById('listKeuanganBendaharaContainer')) document.getElementById('listKeuanganBendaharaContainer').innerHTML = html;
+                if(document.getElementById('listKeuanganKepsekContainer')) document.getElementById('listKeuanganKepsekContainer').innerHTML = html;
+            });
+        }
+
+        function loadKepsekData() {
+            loadRKH();
+            loadAbsenGuru();
+            loadKeuanganBendahara();
+        }
+
     </script>
 </body>
 </html>
